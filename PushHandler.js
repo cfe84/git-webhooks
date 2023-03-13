@@ -1,6 +1,6 @@
 var exec = require('child_process').exec;
 
-module.exports = class PushHandler {
+class PushHandler {
   constructor(repos) {
     this.repos = repos;
     this.onPush = this.onPush.bind(this);
@@ -24,4 +24,8 @@ module.exports = class PushHandler {
           }
       });
   }
+}
+
+module.exports = {
+  PushHandler
 }
