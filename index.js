@@ -7,15 +7,22 @@ app.use(express.json());
 const config = JSON.parse(fs.readFileSync("config.json").toString());
 const handler = new PushHandler(config.repos);
 
-app.post("/api/push", (req, res) => {
+app.post("/api/push", async (req, res) => {
   const body = req.body;
-  console.log(body.hook?.config?.secret);
-  const isPush = pushEvent.hook.events.indexOf("push") >= 0;
+  const isPush = req.headers["X-GitHub-Event"] === "push";
   if (isPush) {
-    handler.onPush(body);
+    try {
+      await handler.onPushAsync(body);
+    } catch(error) {
+      res.status(500);
+      res.send(error);
+      res.end();
+      return;
+    }
+    console.log("success");
+    res.send("success");
   }
-  
-  console.log(body);
+  res.end();
 });
 
 app.listen(config.server.port,
