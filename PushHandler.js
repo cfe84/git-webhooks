@@ -27,5 +27,5 @@ class PushHandler {
 }
 
 module.exports = {
-  PushHandler
+  PushHandler 
 }
