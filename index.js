@@ -9,7 +9,7 @@ const handler = new PushHandler(config.repos);
 
 app.post("/api/push", async (req, res) => {
   const body = req.body;
-  const isPush = req.headers["X-GitHub-Event"] === "push";
+  const isPush = req.header("X-GitHub-Event") === "push";
   if (isPush) {
     try {
       await handler.onPushAsync(body);

@@ -8,11 +8,11 @@ class PushHandler {
 
   onPushAsync(pushEvent) {
     const repoName = pushEvent?.repository.name;
-    console.log(repoName);
-    const repo = this.repos[repoName];
+    const repo = this.repos.find(repo => repo.name === repoName);
     const branch = pushEvent?.repository.default_branch;
     if (!repo) {
       console.log(`Ignored push event as repo ${repoName} is not configured`);
+      return Promise.resolve();
     }
     const path = repo.path;
 
@@ -20,9 +20,9 @@ class PushHandler {
       exec(`cd ${path} && git pull origin ${branch}`,
       function (error, stdout, stderr) {
           console.log('stdout: ' + stdout);
-          console.log('stderr: ' + stderr);
           if (error !== null) {
-              console.log('exec error: ' + error);
+              console.error('exec error: ' + error);
+              console.error('stderr: ' + stderr);
               reject(error);
           } else {
             resolve();
